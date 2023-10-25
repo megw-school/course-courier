@@ -1,38 +1,195 @@
-.App {
-  text-align: center;
+/*
+Primary Color: Deep Blue (#1E3D58) - Conveys trust and professionalism.
+Secondary Color: Soft Gray (#8A9BAE) - Neutral and versatile.
+Accent Color: Bright Teal (#32B2A4) - Adds a refreshing touch and modern feel.
+Background: Light Gray (#F2F3F5) - Clean and unobtrusive.
+Highlight: Coral (#FF6B6B) - Energetic and attention-catching.
+*/
+
+body {
+  font-size: 20px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  color: black;
+  background-color: #F2F3F5;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1 {
+  font-size: 2.75em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h2 {
+  font-size: 2em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+h3 {
+  font-size: 1.5em;
+}
+
+h4 {
+  font-size: 1.4em;
+}
+
+p {
+  font-size: 1em;
+}
+
+/* NavBar Styling */
+.app-nav ul{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #32B2A4;
+}
+
+.app-nav li:first-child {
+  float: left;
+  border: none;
+  border-right:1.5px solid #F2F3F5;
+}
+
+.app-nav li {
+  float: right;
+  border: none;
+  border-left: 1.5px solid #F2F3F5;
+}
+
+.app-nav li a {
+  display: block;
   color: white;
+  font-weight: bold;
+  font-size: calc(5px + 1vmin);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 
-.App-link {
-  color: #61dafb;
+.app-nav li a:hover:not(.active) {
+  background-color: #8A9BAE;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.app-nav li a.active {
+  background-color: #1E3D58;
+  color: white
+}
+
+.app-header {
+  padding: 20px;
+  background-color: #1E3D58;
+  color: white;
+  
+}
+
+/* Home Styling */
+.home-content {
+  padding: 10px;
+  display: flex;
+  text-align: justify;
+}
+
+.home-about {
+  float: left;
+  width: 66.66666%;
+  padding: 20px;
+}
+
+.home-start {
+  float: left;
+  width: 33.33333%;
+  padding: 20px;
+}
+
+.app-home button {
+  background-color: #FF6B6B; /* Green */
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  display: inline-block;
+  font-size: 24px;
+  margin: 5px;
+  cursor: pointer;
+  width:90%;
+}
+
+.app-home button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.app-home button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: -1px;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.app-home button:hover span {
+  padding-right: 25px;
+}
+
+.app-home button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+/* Settings Styling */
+.settings-content div {
+  padding: 15px 40px 15px;
+  display: flex;
+  width: 85%;
+}
+
+input[type=text], select {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.settings-content .label-col {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+  padding:20;
+}
+
+.settings-content .input-col {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+  margin-left: 15px;
+}
+
+.settings-content button {
+  background-color: #1E3D58;
+  font-size: 18px;
+  color: white;
+  padding: 12px 20px;
+  margin: 15px 50px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+
+
+.app-footer {
+  background-color: #32B2A4;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  padding: 3px;
+  text-align: center;
+
 }

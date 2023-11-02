@@ -79,8 +79,7 @@ function SettingsPage({settings, setSettings}) {
                     <br/>
                     {canvas_auth==="token" && <PersonalTokenForm token={canvas_token} tokenChange={setCanvasToken}/>}
                     {canvas_auth==="oauth" && <OAuthCredentialsForm client_id={canvas_client_id} client_secret={canvas_client_secret} setClientId={setCanvasClientID} setClientSecret={setCanvasClientSecret}/>}
-                </form>
-                <form>
+
                     <h3>Task Manager</h3>
                     <select onChange={e => setTaskManager(e.target.value)}>
                         <option value="ClickUp">ClickUp</option>
@@ -96,11 +95,9 @@ function SettingsPage({settings, setSettings}) {
                     {tm_auth==="oauth" && <OAuthCredentialsForm client_id={tm_client_id} client_secret={tm_client_secret} setClientId={setTmClientID} setClientSecret={setTmClientSecret}/>}
 
                 </form>
-                <button
-                    className="default-button"
-                    onClick={saveSettings}>
-                        Save
-                </button>
+                <br/>
+                    <div className = "button-group"><button className='default-button' onClick={saveSettings} ><span>Save</span></button><div/>
+                </div>
             </div>
         </div>
     )

@@ -1,5 +1,5 @@
-@import 'react-checkbox-tree/lib/react-checkbox-tree.css';
-@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '../node_modules/react-checkbox-tree/lib/react-checkbox-tree.css';
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap_override.css';
 
 
@@ -220,24 +220,20 @@ tr:nth-child(even){background-color: #F2F3F5}
   right: 0;
 }
 
+
 /* Settings Styling */
-/*.settings-content {*/
-/*  margin:20px 50px;*/
-/*  padding: 10px;*/
-/*}*/
+.app-settings .content {
+}
 
 .app-settings form {
-  padding: 15px 40px 15px;
   display: flex;
   flex-direction: column;
+  width: 60%;
   margin: 0 auto;
-  width: 80%;
 }
 
 .app-settings select, input {
   float: left;
-  display: flex;
-  flex-direction: column;
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -300,13 +296,6 @@ tr:nth-child(even){background-color: #F2F3F5}
   float: left;
   width: 50%;
 }
-
-/*.app-organize form {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  margin: 0 auto;*/
-/*  width: 100%;*/
-/*}*/
 
 .app-organize select, input {
   float: left;

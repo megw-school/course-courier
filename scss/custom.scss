@@ -1,0 +1,17 @@
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+// 2. Include any default variable overrides here
+$theme-colors: (
+        "primary": #32B2A4,
+);
+
+// merge with existing $theme-colors map
+$theme-colors: map-merge($theme-colors, (
+        "primary": $primary
+));
+
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../node_modules/bootstrap/scss/bootstrap";

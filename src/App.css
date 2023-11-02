@@ -1,3 +1,8 @@
+@import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap_override.css';
+
+
 /*
 Primary Color: Deep Blue (#1E3D58) - Conveys trust and professionalism.
 Secondary Color: Soft Gray (#8A9BAE) - Neutral and versatile.
@@ -26,7 +31,15 @@ h3 {
 }
 
 h4 {
-  font-size: 1.4em;
+  font-size: 1.3em;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+h5 {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 p {
@@ -73,11 +86,79 @@ p {
   color: white
 }
 
+/* Consistent Features */
 .app-header {
   padding: 20px;
   background-color: #1E3D58;
   color: white;
   
+}
+
+.step-display {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.default-button {
+  background-color: #1E3D58;
+  font-size: 18px;
+  color: white;
+  padding: 12px 50px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.content {
+  margin:30px 100px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 50px;
+}
+
+table {
+  border-collapse: collapse;
+  background-color: #EBEBEB;
+  width:100%;
+}
+
+tr th {
+  background-color: #1E3D58;
+  border-bottom: 3px solid white;
+  color: white;
+  text-align: left;
+  padding: 10px 10px 10px 10px;
+  white-space: nowrap;
+}
+
+tr td {
+
+  color: black;
+  white-space: nowrap;
+  padding: 5px 5px 5px 10px;
+  text-align: left;
+}
+
+tr:nth-child(odd){background-color: white}
+tr:nth-child(even){background-color: #F2F3F5}
+
+.rct-disabled > .rct-text > label {
+  opacity: 0.75;
+  cursor: default;
+}
+
+.app-footer {
+  background-color: #32B2A4;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  padding: 3px;
+  text-align: center;
+
 }
 
 /* Home Styling */
@@ -140,56 +221,151 @@ p {
 }
 
 /* Settings Styling */
-.settings-content div {
+/*.settings-content {*/
+/*  margin:20px 50px;*/
+/*  padding: 10px;*/
+/*}*/
+
+.app-settings form {
   padding: 15px 40px 15px;
   display: flex;
-  width: 85%;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 80%;
 }
 
-input[type=text], select {
-  width: 100%;
+.app-settings select, input {
+  float: left;
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  margin: 5px;
 }
 
-.settings-content .label-col {
-  float: left;
-  width: 25%;
-  margin-top: 6px;
-  padding:20;
+.app-settings select {
+  width: 40%;
 }
 
-.settings-content .input-col {
-  float: left;
-  width: 75%;
-  margin-top: 6px;
-  margin-left: 15px;
-}
-
-.settings-content button {
-  background-color: #1E3D58;
-  font-size: 18px;
-  color: white;
-  padding: 12px 20px;
-  margin: 15px 50px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.app-settings .default-button {
   float: right;
 }
 
+/* Help Styling*/
 
 
-.app-footer {
-  background-color: #32B2A4;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  color: white;
-  padding: 3px;
+/* Import Styling */
+.app-import .row {
+  padding: 10px;
+  display: flex;
+}
+
+.import-content-left {
+  float: left;
+  width: 35%;
+}
+
+.app-import  .react-checkbox-tree {
+  font-size: 1.1em;
+}
+
+.import-content-right {
+  float: left;
+  width: 65%;
+  overflow-x: auto;
+}
+
+.app-import .default-button {
+  float: right;
+}
+
+.app-import #export-button {
+  margin-right: 50px;
+  float: right;
+}
+
+/* Organize Page */
+.organize-content-left {
+  display: flex;
+  flex-direction: column;
+  float: left;
+  width: 50%;
+}
+
+.organize-content-right {
+  display: flex;
+  flex-direction: column;
+  float: left;
+  width: 50%;
+}
+
+/*.app-organize form {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  margin: 0 auto;*/
+/*  width: 100%;*/
+/*}*/
+
+.app-organize select, input {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 5px;
+}
+
+.app-organize .default-button {
+  float: right;
+}
+
+.app-organize #back-button {
+  float: left;
+}
+
+/* Review Styling */
+.app-review .row {
+  padding: 10px;
+  display: flex;
+}
+
+.review-content-left {
+  float: left;
+  width: 70%;
+}
+
+.app-review .react-checkbox-tree {
+  font-size: 1em;
+}
+
+.review-content-right {
+  float: left;
+  width: 30%;
+  overflow-x: auto;
+}
+
+.app-review .default-button {
+  float: right;
+}
+
+.app-review #back-button {
+  float: left;
+}
+
+/* Complete Styling */
+.app-complete .progress {
+  height: 50px;
+  border-radius: 10px;
+  font-size: 1.1em;
+}
+.app-complete .progress-bar {
+  transition-delay: 100ms;
+}
+
+.app-complete .status {
   text-align: center;
-
 }

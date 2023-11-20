@@ -14,34 +14,35 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 import dotenv
+
 ENV_SECRET = ".env.secret"
-
-
-
-
 
 
 class ClickUp:
     """Represents user interacting with their ClickUp account."""
 
-    def __init__(self, token=None, client_id=None, client_secret=None, timezone='America/Chicago'):
+    def __init__(self, timezone='America/Chicago'):
         """
-        Initialize session with ClickUp API token.
+        Initialize session with ClickUp.
 
-        :param token: generated API token
+        :param timezone: optional, timezone to use when creating due dates and start dates
         """
+        self._base_url = "https://api.clickup.com/api/v2"
+        self._headers = {'Authorization': ''}
+        self._canvas_timezone = pytz.timezone('America/Los_Angeles')
+        self._timezone = pytz.timezone(timezone)
 
+    def set_authentication_parameters(self, token=None, client_id=None, client_secret=None):
         if not (token or (client_id and client_secret)):
             raise PermissionError('Invalid credentials provided')
 
-        self._base_url = "https://api.clickup.com/api/v2"
-
-        if client_secret != None or client_secret != "":
+        if client_secret is not None or client_secret != "":
             token = self._oauth_flow(client_id, client_secret)
 
-        self._headers = {'Authorization': token}
-        self._canvas_timezone = pytz.timezone('America/Los_Angeles')
-        self._timezone = pytz.timezone(timezone)
+        if token is not None:
+            self._headers['Authorization'] = token
+        else:
+            raise (Exception("Invalid authentication token."))
 
     def _oauth_flow(self, client_id, client_secret):
         body = {
@@ -63,7 +64,8 @@ class ClickUp:
             start_ind = callback.find('=') + 1
             code = callback[start_ind:]
 
-            res = requests.post(f"{self._base_url}/oauth/token?client_id={client_id}&client_secret={client_secret}&code={code}")
+            res = requests.post(
+                f"{self._base_url}/oauth/token?client_id={client_id}&client_secret={client_secret}&code={code}")
             data = json.loads(res.text)
 
             return data['access_token']
@@ -206,8 +208,8 @@ class ClickUp:
             data.update(
                 {
                     'due_date': int(self._canvas_timezone.localize(datetime.datetime.strptime(due_date, "%m/%d/%Y")).
-                                      replace(tzinfo=datetime.timezone.utc).
-                                      timestamp() * 1000)
+                                    replace(tzinfo=datetime.timezone.utc).
+                                    timestamp() * 1000)
                 })
 
         if start_date:
@@ -234,14 +236,16 @@ class ClickUp:
 
 
 if __name__ == "__main__":
-    clickup = ClickUp(
-        dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
-        dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
-        dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
+    clickup = ClickUp()
+    clickup.set_authentication_parameters(
+        token=dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
+        client_id=dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
+        client_secret=dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
     )
     workspace_name = "CS361 Project Test"
 
     workspaces = clickup.get_workspaces()
+    workspace_id = None
     for workspace in workspaces:
         if workspace['name'] == workspace_name:
             workspace_id = workspace['id']
@@ -250,5 +254,5 @@ if __name__ == "__main__":
     new_list = clickup.create_list(new_space[0], "ClickUp Model Test List")
     new_task1 = clickup.create_task(new_list[0], "ClickUp Model Test Task 1", "10/29/2023")
     new_task2 = clickup.create_task(new_list[0], "ClickUp Model Test Task 2", "10/30/2023", "10/20/2023",
-                                   ["Test Tag 1", "Test Tag 2"],
-                                   "This is a test task created using the Python ClickUp Model.")
+                                    ["Test Tag 1", "Test Tag 2"],
+                                    "This is a test task created using the Python ClickUp Model.")

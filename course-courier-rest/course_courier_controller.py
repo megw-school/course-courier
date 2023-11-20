@@ -14,19 +14,8 @@ ENV_SECRET = ".env.secret"
 ENV_SHARED = ".env.shared"
 
 memo = {}
-
-clickup = ClickUp(
-    dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
-    dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
-    dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
-)
-
-canvas = Canvas(
-    dotenv.get_key(ENV_SECRET, 'CANVAS_TOKEN'),
-    dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_ID'),
-    dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_SECRET')
-)
-
+clickup = ClickUp()
+canvas = Canvas()
 app = Flask(__name__)
 
 
@@ -140,6 +129,19 @@ def get_credentials(service):
         dotenv.set_key(ENV_SECRET, f'{service}_TOKEN', data['token'])
         dotenv.set_key(ENV_SECRET, f'{service}_CLIENT_ID', data['client_id'])
         dotenv.set_key(ENV_SECRET, f'{service}_CLIENT_SECRET', data['client_secret'])
+
+        if service == 'CLICKUP':
+            clickup.set_authentication_parameters(
+                dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
+                dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
+                dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
+            )
+        elif service == 'CANVAS':
+            canvas.set_authentication_parameters(
+                dotenv.get_key(ENV_SECRET, 'CANVAS_TOKEN'),
+                dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_ID'),
+                dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_SECRET')
+            )
 
         return "Success", 200
 

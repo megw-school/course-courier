@@ -12,17 +12,18 @@ import datetime
 class Canvas:
     """Represents user interacting with their Canvas account."""
 
-    def __init__(self, token=None, client_id=None, client_secret=None):
+    def __init__(self):
         """
         Initialize session with Canvas API token.
-
-        :param token: generated API token
         """
+        self._base_url = "https://canvas.oregonstate.edu/api/v1"
+        self._headers = {'Authorization': ''}
+
+    def set_authentication_parameters(self, token=None, client_id=None, client_secret=None):
         if not (token or (client_id and client_secret)):
             raise PermissionError('Invalid credentials provided')
 
-        self._base_url = "https://canvas.oregonstate.edu/api/v1"
-        self._headers = {'Authorization': f'Bearer 	 {token}'}
+        self._headers['Authorization'] = f'Bearer 	 {token}'
 
     def _get(self, endpoint, per_page=50):
         """
@@ -146,8 +147,10 @@ class Canvas:
 
 
 if __name__ == "__main__":
-    TOKEN = dotenv.get_key(".env.secret", "CANVAS_TOKEN")
-    canvas = Canvas(TOKEN)
+    canvas = Canvas()
+    canvas.set_authentication_parameters(
+        token=dotenv.get_key(".env.secret", "CANVAS_TOKEN")
+    )
     courses = canvas.get_courses()
 
     term = 'F2023'  # 'all', 'F2023', 'S2023', 'U2023', 'W2023'

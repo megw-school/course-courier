@@ -103,6 +103,21 @@ def build_assignments(term):
     memo['assignments'] = {term: assignments}
 
 
+def service_auth(service_name):
+    if service_name == 'CLICKUP':
+        clickup.set_authentication_parameters(
+            dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
+            dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
+            dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
+        )
+    elif service_name == 'CANVAS':
+        canvas.set_authentication_parameters(
+            dotenv.get_key(ENV_SECRET, 'CANVAS_TOKEN'),
+            dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_ID'),
+            dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_SECRET')
+        )
+
+
 @app.get("/")
 def index():
     return 'course courier service'
@@ -130,24 +145,16 @@ def get_credentials(service):
         dotenv.set_key(ENV_SECRET, f'{service}_CLIENT_ID', data['client_id'])
         dotenv.set_key(ENV_SECRET, f'{service}_CLIENT_SECRET', data['client_secret'])
 
-        if service == 'CLICKUP':
-            clickup.set_authentication_parameters(
-                dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
-                dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
-                dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
-            )
-        elif service == 'CANVAS':
-            canvas.set_authentication_parameters(
-                dotenv.get_key(ENV_SECRET, 'CANVAS_TOKEN'),
-                dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_ID'),
-                dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_SECRET')
-            )
+        service_auth(service)
 
         return "Success", 200
 
 
 @app.get("/canvas-course-tree")
 def get_canvas_course_tree():
+    if not canvas.authenticated:
+        service_auth("CANVAS")
+
     # return as a selection tree format
     term = request.args.get('term')  # 'all', 'F2023', 'S2023', 'U2023', 'W2023'
     if not term:
@@ -160,6 +167,9 @@ def get_canvas_course_tree():
 
 @app.get("/canvas-assignments")
 def get_canvas_assignments():
+    if not canvas.authenticated:
+        service_auth("CANVAS")
+
     # return as a selection tree format
     term = request.args.get('term')  # 'all', 'F2023', 'S2023', 'U2023', 'W2023'
     if not term:
@@ -172,6 +182,9 @@ def get_canvas_assignments():
 
 @app.get("/clickup-workspaces")
 def get_clickup_workspaces():
+    if not clickup.authenticated:
+        service_auth("CLICKUP")
+
     build_clickup_workspaces()
 
     if request.args.get('name'):
@@ -182,6 +195,9 @@ def get_clickup_workspaces():
 
 @app.post("/clickup-task")
 def create_clickup_task():
+    if not clickup.authenticated:
+        service_auth("CLICKUP")
+
     data = request.get_json()
     task_id, success = build_clickup_task(data['workspace'], data['space'], data['list'], data['task'])
 
@@ -193,5 +209,3 @@ def create_clickup_task():
 
 if __name__ == "__main__":
     app.run(host=dotenv.get_key(ENV_SHARED, "HOST"), port=dotenv.get_key(ENV_SHARED, "PORT"), debug=True)
-#     build_clickup_workspaces()
-#     build_clickup_task("CS361 Project Test", 'test-space', 'test-list', task={})

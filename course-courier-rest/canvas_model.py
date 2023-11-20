@@ -18,12 +18,17 @@ class Canvas:
         """
         self._base_url = "https://canvas.oregonstate.edu/api/v1"
         self._headers = {'Authorization': ''}
+        self.authenticated = False
 
     def set_authentication_parameters(self, token=None, client_id=None, client_secret=None):
         if not (token or (client_id and client_secret)):
             raise PermissionError('Invalid credentials provided')
 
-        self._headers['Authorization'] = f'Bearer 	 {token}'
+        if token is not None or token != "":
+            self._headers['Authorization'] = f'Bearer 	 {token}'
+            self.authenticated = True
+        else:
+            raise Exception("Invalid authentication token.")
 
     def _get(self, endpoint, per_page=50):
         """

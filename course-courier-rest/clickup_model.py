@@ -31,6 +31,7 @@ class ClickUp:
         self._headers = {'Authorization': ''}
         self._canvas_timezone = pytz.timezone('America/Los_Angeles')
         self._timezone = pytz.timezone(timezone)
+        self.authenticated = False
 
     def set_authentication_parameters(self, token=None, client_id=None, client_secret=None):
         if not (token or (client_id and client_secret)):
@@ -39,10 +40,11 @@ class ClickUp:
         if client_secret is not None or client_secret != "":
             token = self._oauth_flow(client_id, client_secret)
 
-        if token is not None:
+        if token is not None or token != "":
             self._headers['Authorization'] = token
+            self.authenticated = True
         else:
-            raise (Exception("Invalid authentication token."))
+            raise Exception("Invalid authentication token.")
 
     def _oauth_flow(self, client_id, client_secret):
         body = {

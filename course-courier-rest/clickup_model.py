@@ -7,10 +7,18 @@ import requests
 import json
 import datetime
 import pytz
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-import os
 import dotenv
 ENV_SECRET = ".env.secret"
+
+
+
+
 
 
 class ClickUp:
@@ -27,9 +35,40 @@ class ClickUp:
             raise PermissionError('Invalid credentials provided')
 
         self._base_url = "https://api.clickup.com/api/v2"
+
+        if client_secret != None or client_secret != "":
+            token = self._oauth_flow(client_id, client_secret)
+
         self._headers = {'Authorization': token}
         self._canvas_timezone = pytz.timezone('America/Los_Angeles')
         self._timezone = pytz.timezone(timezone)
+
+    def _oauth_flow(self, client_id, client_secret):
+        body = {
+            'client_id': client_id,
+            'client_secret': client_secret
+        }
+        res = requests.post(f"https://muddy-voice-7929.fly.dev/api/oauth", json=body, allow_redirects=True)
+
+        if res.ok:
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+            wait = WebDriverWait(driver, 5 * 60)
+
+            driver.get(res.url)
+            wait.until(EC.url_contains("https://muddy-voice-7929.fly.dev/?code="))
+
+            callback = driver.current_url
+            driver.close()
+
+            start_ind = callback.find('=') + 1
+            code = callback[start_ind:]
+
+            res = requests.post(f"{self._base_url}/oauth/token?client_id={client_id}&client_secret={client_secret}&code={code}")
+            data = json.loads(res.text)
+
+            return data['access_token']
+
+        raise Exception('Error in clickup microservice: Could not get access token')
 
     def _post(self, endpoint, body):
         """
@@ -207,9 +246,9 @@ if __name__ == "__main__":
         if workspace['name'] == workspace_name:
             workspace_id = workspace['id']
 
-    space_id = clickup.create_space(workspace_id, "ClickUp Model Test Space")
-    list_id = clickup.create_list(space_id, "ClickUp Model Test List")
-    task1_id = clickup.create_task(list_id, "ClickUp Model Test Task 1", "10/29/2023")
-    task2_id = clickup.create_task(list_id, "ClickUp Model Test Task 2", "10/30/2023", "10/20/2023",
+    new_space = clickup.create_space(workspace_id, "ClickUp Model Test Space")
+    new_list = clickup.create_list(new_space[0], "ClickUp Model Test List")
+    new_task1 = clickup.create_task(new_list[0], "ClickUp Model Test Task 1", "10/29/2023")
+    new_task2 = clickup.create_task(new_list[0], "ClickUp Model Test Task 2", "10/30/2023", "10/20/2023",
                                    ["Test Tag 1", "Test Tag 2"],
                                    "This is a test task created using the Python ClickUp Model.")

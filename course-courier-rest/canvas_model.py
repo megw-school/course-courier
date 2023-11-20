@@ -9,9 +9,6 @@ import dotenv
 import calendar
 import datetime
 
-TOKEN = dotenv.get_key(".env.secret", "CANVAS_TOKEN")
-
-
 class Canvas:
     """Represents user interacting with their Canvas account."""
 
@@ -149,6 +146,7 @@ class Canvas:
 
 
 if __name__ == "__main__":
+    TOKEN = dotenv.get_key(".env.secret", "CANVAS_TOKEN")
     canvas = Canvas(TOKEN)
     courses = canvas.get_courses()
 

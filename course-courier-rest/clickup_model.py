@@ -28,7 +28,7 @@ class ClickUp:
         :param timezone: optional, timezone to use when creating due dates and start dates
         """
         self._base_url = "https://api.clickup.com/api/v2"
-        self._headers = {'Authorization': ''}
+        self._headers = {"Content-Type": "application/json", 'Authorization': ''}
         self._canvas_timezone = pytz.timezone('America/Los_Angeles')
         self._timezone = pytz.timezone(timezone)
         self.authenticated = False
@@ -99,7 +99,7 @@ class ClickUp:
         :return: full result
         """
         url = ''.join([self._base_url, endpoint])
-        res = requests.request('POST', url, headers=self._headers, data=body)
+        res = requests.post(url, headers=self._headers, json=body)
 
         return json.loads(res.text)
 
@@ -111,7 +111,7 @@ class ClickUp:
         :return: full result
         """
         url = ''.join([self._base_url, endpoint])
-        res = requests.request('GET', url, headers=self._headers)
+        res = requests.get(url, headers=self._headers)
 
         return json.loads(res.text)
 
@@ -145,13 +145,14 @@ class ClickUp:
         """
         data = {
             "name": space_name,
+            "multiple_assignees": True,
             "features": {
                 "due_dates": {
                     "enabled": True,
-                    "start_date": True,
+                    "start_date": False
                 },
                 "time_tracking": {
-                    "enabled": True
+                    "enabled": False
                 },
                 "tags": {
                     "enabled": True
@@ -164,16 +165,9 @@ class ClickUp:
                 },
                 "custom_fields": {
                     "enabled": True
-                },
-                "remap_dependencies": {
-                    "enabled": True
-                },
-                "dependency_warning": {
-                    "enabled": True
-                },
+                }
             }
         }
-
         endpoint = f"/team/{workspace_id}/space"
         space = self._post(endpoint, data)
         if not space:

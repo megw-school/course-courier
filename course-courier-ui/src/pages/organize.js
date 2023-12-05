@@ -17,7 +17,6 @@ function OrganizePage({config, setConfig}) {
     const [space, setSpace] = useState(config.space);
     const [list, setList] = useState(config.list);
     const [tag, setTag] = useState(config.tag);
-    const [week_start, setWeekStart] = useState(config.week_start);
     const [include_start, setIncludeStart] = useState(config.includeStart);
     const [include_url, setIncludeUrl] = useState(config.includeUrl);
 
@@ -38,7 +37,6 @@ function OrganizePage({config, setConfig}) {
             space: space,
             list: list,
             tag: tag,
-            week_start: week_start,
             includeStart: include_start,
             includeUrl: include_url
         };
@@ -57,7 +55,6 @@ function OrganizePage({config, setConfig}) {
             space: space,
             list: list,
             tag: tag,
-            week_start: week_start,
             includeStart: include_start,
             includeUrl: include_url
         };
@@ -142,22 +139,6 @@ function OrganizePage({config, setConfig}) {
                                     <option value="week">Week Available</option>
                                     <option value="type">Assignment Type</option>
                                     <option value="none">None</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="organize-content-left">
-                                <label>Week Start</label>
-                            </div>
-                            <div className="organize-content-right">
-                                <select value={week_start} onChange={e => setWeekStart(e.target.value)}>
-                                    <option value="sun">Sunday</option>
-                                    <option value="mon">Monday</option>
-                                    <option value="tue">Tuesday</option>
-                                    <option value="wed">Wednesday</option>
-                                    <option value="thur">Thursday</option>
-                                    <option value="fri">Friday</option>
-                                    <option value="sat">Saturday</option>
                                 </select>
                             </div>
                         </div>

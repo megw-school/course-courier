@@ -24,7 +24,7 @@ function App() {
             assignments: {selected: [], all: []}
         })
     const [configData, setConfigData] = useState(
-        {workspace_name: 'default', space:'course', list:'type', tag:'none' , week_start: 'mon', includeStart:false, includeUrl:true}
+        {workspace_name: 'default', space:'course', list:'type', tag:'none' , includeStart:false, includeUrl:true}
         )
     const [reviewData, setReviewData] = useState({workspace: [], expanded: [], tasks: []})
 

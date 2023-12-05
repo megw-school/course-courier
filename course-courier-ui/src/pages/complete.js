@@ -114,7 +114,9 @@ function CompletePage({assignments, config}) {
                 <br/>
                 <br/>
                 <h4>Errors</h4>
-                <ErrorTable errors={errors}></ErrorTable>
+                <div className="complete-error-table">
+                    <ErrorTable errors={errors}></ErrorTable>
+                </div>
             </div>
 
         </div>

@@ -381,3 +381,7 @@ tr:nth-child(even){background-color: #F2F3F5}
 .app-complete .status {
   text-align: center;
 }
+
+.app-complete .complete-error-table {
+   overflow-x: auto;
+ }

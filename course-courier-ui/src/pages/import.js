@@ -159,8 +159,8 @@ function ImportPage({importData, setImportData}) {
             <img className="step-display" src="/progress_import.png" alt="Progress - Import"/>
             <div className="content">
                 <h3>Import Coursework</h3>
-                <p>Use the checkbox tree below to include or not include coursework based on the course and/or type.
-                    Changes will reflect in the table below.</p>
+                <p>Use the selection tree below to include or not include coursework based on the course and/or type.
+                    Changes will reflect in the table below. Optionally, export the selection tree as a JSON file using Export.</p>
                 <strong>Select Term</strong>
                 <div className="term-box">
                     <select onChange={e => setTerm(e.target.value)}>

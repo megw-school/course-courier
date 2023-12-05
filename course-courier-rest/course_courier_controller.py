@@ -1,25 +1,36 @@
 # Author: Megan Wooley
 # GitHub username: megw-school
 # Date 10/28/2023
-# Description: *
+# Description: This script provides all endpoints for course-courier.
 
+
+import datetime
 
 import dotenv
 from flask import Flask, jsonify, request
+
 from canvas_model import Canvas
 from clickup_model import ClickUp
-import datetime
 
 ENV_SECRET = ".env.secret"
 ENV_SHARED = ".env.shared"
 
-memo = {}
+memo = {'CANVAS': {'auth_type': 'token'}, 'CLICKUP': {'auth_type': 'token'}}
 clickup = ClickUp()
 canvas = Canvas()
 app = Flask(__name__)
 
 
 def build_clickup_task(workspace, space, listt, task):
+    """
+    Create a ClickUp task. Checks if the workspace, space, and list already exist or need to be created.
+
+    :param workspace: name of workspace
+    :param space: name of space
+    :param listt: name of list
+    :param task: task object
+    :return: ID of created task and True if successful, False otherwise
+    """
     if 'clickup_workspaces' not in memo:
         return "Could not find workspace.", False
 
@@ -44,15 +55,21 @@ def build_clickup_task(workspace, space, listt, task):
         memo['clickup_workspace'][space][listt]['id'],
         task['name'],
         None if not task['due_date'] else datetime.datetime.fromisoformat(task['due_date']).strftime('%m/%d/%Y'),
-        None if 'unlock_date' not in task or not task['unlock_date'] else datetime.datetime.fromisoformat(task['unlock_date']).strftime('%m/%d/%Y'),
-        None if 'url' not in task else task['url'],
-        None if 'tag' not in task else [task['tag']],
+        start_date=None if not task.get('unlock_date', None) else datetime.datetime.fromisoformat(
+            task['unlock_date']).strftime('%m/%d/%Y'),
+        description=None if not task.get('url', None) else task['url'],
+        tags=None if not task.get('tag', None) else [task['tag']],
     )
 
     return task_id, True
 
 
 def build_clickup_workspaces():
+    """
+    Find the ClickUp workspace and add it to memo.
+
+    :return: None
+    """
     if 'clickup_workspaces' not in memo:
         workspaces = clickup.get_workspaces()
         data = {}
@@ -63,6 +80,12 @@ def build_clickup_workspaces():
 
 
 def build_course_tree(term):
+    """
+    Build tree that organizes assignments by course and add to memo.
+
+    :param term: university term
+    :return: None
+    """
     if 'canvas_courses' in memo and term in memo['canvas_courses']:
         return memo['course_tree'][term]
 
@@ -86,6 +109,12 @@ def build_course_tree(term):
 
 
 def build_assignments(term):
+    """
+    Get assignments for each course and add to memo.
+
+    :param term: university term
+    :return: None
+    """
     if 'assignments' in memo and term in memo['assignments']:
         return memo['assignments'][term]
 
@@ -104,14 +133,23 @@ def build_assignments(term):
 
 
 def service_auth(service_name):
+    """
+    Handle authentication for a given service.
+
+    :param service_name: name of service in all caps
+    :return: None
+    """
+    auth_type = memo[service_name]['auth_type']
     if service_name == 'CLICKUP':
-        clickup.set_authentication_parameters(
+        clickup.authenticate(
+            auth_type,
             dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
             dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
             dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
         )
     elif service_name == 'CANVAS':
-        canvas.set_authentication_parameters(
+        canvas.authenticate(
+            auth_type,
             dotenv.get_key(ENV_SECRET, 'CANVAS_TOKEN'),
             dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_ID'),
             dotenv.get_key(ENV_SECRET, 'CANVAS_CLIENT_SECRET')
@@ -120,11 +158,22 @@ def service_auth(service_name):
 
 @app.get("/")
 def index():
-    return 'course courier service'
+    """
+    Check that service is running.
+
+    :return: validation message
+    """
+    return 'Course Courier service is running...'
 
 
 @app.route("/credentials/<service>", methods=['PUT', 'GET'])
 def get_credentials(service):
+    """
+    Endpoint for GET or PUT credentials. If PUT, updates the credentials locally.
+
+    :param service: name of service in all caps
+    :return: If PUT, returns Success. If GET, returns the credential data from local env.
+    """
     service = service.upper()
     task_managers = ['CLICKUP']
     if service not in task_managers and service != 'CANVAS':
@@ -144,6 +193,7 @@ def get_credentials(service):
         dotenv.set_key(ENV_SECRET, f'{service}_TOKEN', data['token'])
         dotenv.set_key(ENV_SECRET, f'{service}_CLIENT_ID', data['client_id'])
         dotenv.set_key(ENV_SECRET, f'{service}_CLIENT_SECRET', data['client_secret'])
+        memo[service] = {'auth_type': data['auth_type']}
 
         service_auth(service)
 
@@ -152,6 +202,11 @@ def get_credentials(service):
 
 @app.get("/canvas-course-tree")
 def get_canvas_course_tree():
+    """
+    Get the canvas course tree which organizes assignments by course. Optionally provide the term as a query parameter.
+
+    :return: Tree as JSON object
+    """
     if not canvas.authenticated:
         service_auth("CANVAS")
 
@@ -167,6 +222,11 @@ def get_canvas_course_tree():
 
 @app.get("/canvas-assignments")
 def get_canvas_assignments():
+    """
+    Get all assignments on canvas. Optionally, provide the term as a query parameter.
+
+    :return: assignments as a JSON object
+    """
     if not canvas.authenticated:
         service_auth("CANVAS")
 
@@ -182,6 +242,11 @@ def get_canvas_assignments():
 
 @app.get("/clickup-workspaces")
 def get_clickup_workspaces():
+    """
+    Get all ClickUp workspaces.
+
+    :return: workspaces as a JSON object
+    """
     if not clickup.authenticated:
         service_auth("CLICKUP")
 
@@ -195,11 +260,17 @@ def get_clickup_workspaces():
 
 @app.post("/clickup-task")
 def create_clickup_task():
+    """
+    Create a ClickUp task provided and provide the task object in the POST body.
+
+    :return: Success if task was created, otherwise the ID of what failed.
+    """
     if not clickup.authenticated:
         service_auth("CLICKUP")
 
     data = request.get_json()
-    task_id, success = build_clickup_task(data['workspace'], data['space'], data['list'], data['task'])
+    task_id, success = build_clickup_task(data.get('workspace', None), data.get('space', None), data.get('list', None),
+                                          data.get('task', None))
 
     if not success:
         return task_id, 400

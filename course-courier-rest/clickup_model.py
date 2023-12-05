@@ -3,17 +3,17 @@
 # Date 10/27/2023
 # Description: Access and create tasks in ClickUp through the ClickUp API
 
-import requests
-import json
 import datetime
-import pytz
-from selenium.webdriver.support import expected_conditions as EC
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+import json
 
 import dotenv
+import pytz
+import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
 ENV_SECRET = ".env.secret"
 
@@ -33,20 +33,36 @@ class ClickUp:
         self._timezone = pytz.timezone(timezone)
         self.authenticated = False
 
-    def set_authentication_parameters(self, token=None, client_id=None, client_secret=None):
-        if not (token or (client_id and client_secret)):
-            raise PermissionError('Invalid credentials provided')
+    def authenticate(self, auth_type, token=None, client_id=None, client_secret=None):
+        """
+        Authenticate for REST session.
 
-        if client_secret is not None or client_secret != "":
+        :param auth_type: either 'oauth' or 'token'
+        :param token: personal token or authorization token
+        :param client_id: app registered client ID
+        :param client_secret: app registered client secret
+        :return: None
+        """
+        if not (token or (client_id and client_secret)):
+            raise PermissionError('No credentials provided')
+
+        if auth_type == 'oauth' and client_id and client_secret:
             token = self._oauth_flow(client_id, client_secret)
 
-        if token is not None or token != "":
-            self._headers['Authorization'] = token
-            self.authenticated = True
-        else:
-            raise Exception("Invalid authentication token.")
+        elif auth_type != 'token' or not token:
+            raise PermissionError("Missing token.")
+
+        self._headers['Authorization'] = token
+        self.authenticated = True
 
     def _oauth_flow(self, client_id, client_secret):
+        """
+        Perform OAuth flow to get authorization token.
+
+        :param client_id: app registered client ID
+        :param client_secret: app registered client secret
+        :return: None
+        """
         body = {
             'client_id': client_id,
             'client_secret': client_secret
@@ -58,7 +74,7 @@ class ClickUp:
             wait = WebDriverWait(driver, 5 * 60)
 
             driver.get(res.url)
-            wait.until(EC.url_contains("https://muddy-voice-7929.fly.dev/?code="))
+            wait.until(ec.url_contains("https://muddy-voice-7929.fly.dev/?code="))
 
             callback = driver.current_url
             driver.close()
@@ -125,7 +141,7 @@ class ClickUp:
 
         :param workspace_id: the ID of the workspace
         :param space_name: name of the space to create
-        :return: ID of the space created
+        :return: ID of the space created and True if successful, False otherwise
         """
         data = {
             "name": space_name,
@@ -160,7 +176,6 @@ class ClickUp:
 
         endpoint = f"/team/{workspace_id}/space"
         space = self._post(endpoint, data)
-        print(space)
         if not space:
             return "Could not create space.", False
         elif 'err' in space:
@@ -199,7 +214,7 @@ class ClickUp:
         :param start_date: optional, date the task is started in the format MM/DD/YYYY
         :param tags: list of strings that will be tags for the task
         :param description: optional, description of the task
-        :return: ID of the task created
+        :return: ID of the task created and True if successful, False otherwise
         """
         # date input is in posix
         data = {
@@ -239,7 +254,8 @@ class ClickUp:
 
 if __name__ == "__main__":
     clickup = ClickUp()
-    clickup.set_authentication_parameters(
+    clickup.authenticate(
+        'token',
         token=dotenv.get_key(ENV_SECRET, 'CLICKUP_TOKEN'),
         client_id=dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_ID'),
         client_secret=dotenv.get_key(ENV_SECRET, 'CLICKUP_CLIENT_SECRET')
@@ -255,6 +271,6 @@ if __name__ == "__main__":
     new_space = clickup.create_space(workspace_id, "ClickUp Model Test Space")
     new_list = clickup.create_list(new_space[0], "ClickUp Model Test List")
     new_task1 = clickup.create_task(new_list[0], "ClickUp Model Test Task 1", "10/29/2023")
-    new_task2 = clickup.create_task(new_list[0], "ClickUp Model Test Task 2", "10/30/2023", "10/20/2023",
-                                    ["Test Tag 1", "Test Tag 2"],
-                                    "This is a test task created using the Python ClickUp Model.")
+    new_task2 = clickup.create_task(new_list[0], "ClickUp Model Test Task 2", "10/30/2023", start_date="10/20/2023",
+                                    tags=["Test Tag 1", "Test Tag 2"],
+                                    description="This is a test task created using the Python ClickUp Model.")

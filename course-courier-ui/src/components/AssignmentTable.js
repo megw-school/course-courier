@@ -1,6 +1,14 @@
 import React from 'react'
 import AssignmentRow from './AssignmentRow';
 
+/**
+ * Assignment Table
+ * Used for building the assignment table in Import page.
+ *
+ * @param assignments assignments to add to table
+ * @returns {Element} assignment table
+ * @constructor
+ */
 function AssignmentTable({assignments}) {
     return (
         <table>
@@ -14,7 +22,7 @@ function AssignmentTable({assignments}) {
             </tr>
             </thead>
             <tbody>
-                {assignments.map((assignment, i) => <AssignmentRow assignment={assignment} key={i} />)}
+            {assignments.map((assignment, i) => <AssignmentRow assignment={assignment} key={i}/>)}
             </tbody>
         </table>
     )

@@ -3,11 +3,12 @@
 # Date: 10/12/2023
 # Description: Access courses and assignments in Canvas through the Canvas API.
 
-import requests
-import json
-import dotenv
-import calendar
 import datetime
+import json
+
+import dotenv
+import requests
+
 
 class Canvas:
     """Represents user interacting with their Canvas account."""
@@ -20,15 +21,28 @@ class Canvas:
         self._headers = {'Authorization': ''}
         self.authenticated = False
 
-    def set_authentication_parameters(self, token=None, client_id=None, client_secret=None):
-        if not (token or (client_id and client_secret)):
-            raise PermissionError('Invalid credentials provided')
+    def authenticate(self, auth_type, token=None, client_id=None, client_secret=None):
+        """
+        Authenticate for REST session.
 
-        if token is not None or token != "":
-            self._headers['Authorization'] = f'Bearer 	 {token}'
-            self.authenticated = True
-        else:
-            raise Exception("Invalid authentication token.")
+        :param auth_type: either 'oauth' or 'token'
+        :param token: personal token or authorization token
+        :param client_id: app registered client ID
+        :param client_secret: app registered client secret
+        :return: None
+        """
+        if not (token or (client_id and client_secret)):
+            raise PermissionError('No credentials provided')
+
+        if auth_type == 'oauth' and client_id and client_secret:
+            raise Exception('Not yet implemented')
+            # token = self._oauth_flow(client_id, client_secret)
+
+        elif auth_type != 'token' or not token:
+            raise PermissionError("Missing token.")
+
+        self._headers['Authorization'] = f'Bearer 	 {token}'
+        self.authenticated = True
 
     def _get(self, endpoint, per_page=50):
         """
@@ -84,7 +98,7 @@ class Canvas:
 
     def get_assignment_types(self, course_id):
         """
-        Get all assingment types for a given course.
+        Get all assignment types for a given course.
 
         :param course_id: Canvas internal ID for course
         :return: assignment types for the course
@@ -103,6 +117,8 @@ class Canvas:
 
         :param course_id: Canvas internal ID for course
         :param assignment_type_id: optional, Canvas internal ID for assignment type (specific to course)
+        :param course_name: optional, course name for readability in output
+        :param assignment_type_lookup: optional, assignment type look up dictionary for readability in output
         :return: assignments for course
         """
         if assignment_type_id:
@@ -153,7 +169,8 @@ class Canvas:
 
 if __name__ == "__main__":
     canvas = Canvas()
-    canvas.set_authentication_parameters(
+    canvas.authenticate(
+        'token',
         token=dotenv.get_key(".env.secret", "CANVAS_TOKEN")
     )
     courses = canvas.get_courses()
@@ -167,11 +184,9 @@ if __name__ == "__main__":
             course_name_lookup[course['id']] = course['name']
             assignment_type_lookup[course['id']] = canvas.get_assignment_types(course['id'])
 
-            assignments.extend(canvas.get_assignments(course['id'], course_name=course['name'], assignment_type_lookup=assignment_type_lookup[course['id']]))
-
+            assignments.extend(canvas.get_assignments(course['id'], course_name=course['name'],
+                                                      assignment_type_lookup=assignment_type_lookup[course['id']]))
 
     courseTree = {}
     for idd in assignment_type_lookup:
         courseTree[course_name_lookup[idd]] = set(assignment_type_lookup[idd].values())
-
-bleh = 1

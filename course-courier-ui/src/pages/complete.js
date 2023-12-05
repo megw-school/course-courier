@@ -2,70 +2,82 @@ import React, {useEffect, useState} from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import ErrorTable from "../components/ErrorTable";
 
-function CompletePage({tasks, assignments, config}) {
+/**
+ * Complete Page
+ * This is the last step of the Course Courier process and calls for the creation of task. Status of the process is
+ * shown as well as any errors at the end of the process.
+ *
+ * @param assignments selected assignments from previous steps
+ * @param config organization of workspace from previous steps
+ * @returns {Element} Complete Page
+ * @constructor
+ */
+function CompletePage({assignments, config}) {
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState("");
-    const [errors, setErrors] = useState([{space:'None', list:'None', task:'None', msg:'None'}])
-
+    const [errors, setErrors] = useState([{space: 'None', list: 'None', task: 'None', msg: 'None'}])
     let tempErrors = [];
+
+    /**
+     * Create Tasks
+     * Calls to controller to create tasks. Updates progress in a progress bar and tracks any errors.
+     *
+     * @returns {Promise<void>}
+     */
     const createTasks = async () => {
         if (progress < 100) {
             let space, list, tag, data;
             let oldProgress = 0.0;
             let cnt = 0
 
-            for (let idd of tasks) {
-                data = assignments.filter(item => item.id === idd)[0];
-                space = data[config.space];
-                list = data[config.list];
-                tag = data[config.tag] !== 'none' ? data[config.tag] : undefined;
+            // Create each assignment
+            for (let assignment of assignments) {
+                data = assignment;
+                space = config.space === 'none' ? 'All Courses' : data[config.space];
+                list = config.list === 'none' ? 'All Coursework' : data[config.list];
+                tag = data[config.tag] === 'none' ? undefined : data[config.tag];
 
                 let task = {
                     name: data.name,
                     due_date: data.due_date,
-                    unlock_date: data.unlock_date,
-                    url: data.url,
+                    unlock_date: !config.includeStart ? undefined : data.unlock_date,
+                    url: !config.includeUrl ? undefined : data.url,
                     tag: tag
                 };
 
-                if (!config.includeStart) {
-                    task.unlock_date = undefined;
-                }
-
-                if (!config.includeUrl) {
-                    task.url = undefined;
-                }
-
-                let output = {
+                let req_body = {
                     workspace: config.workspace_name,
                     space: space,
                     list: list,
                     task: task
                 };
 
+                console.log('Request body');
+                console.log(req_body);
                 const response = await fetch(`/clickup-task`, {
                     method: 'POST',
-                    body: JSON.stringify(output),
+                    body: JSON.stringify(req_body),
                     headers: {
                         'Content-Type': 'application/json'
                     },
                 });
 
+                // Save any errors for error table
                 let msg = await response.text();
                 if (response.status !== 200) {
-                    tempErrors.push({space:space, list:list, task:task.name, msg:msg});
+                    tempErrors.push({space: space, list: list, task: task.name, msg: msg});
                 }
 
+                // For progress bar
                 cnt++;
-                oldProgress = Math.floor(cnt / tasks.length * 100);
+                oldProgress = Math.floor(cnt / assignments.length * 100);
                 setProgress(oldProgress);
 
-                if (oldProgress < 30) {
+                if (oldProgress < 10) {
                     setStatus('Creating Spaces');
-                } else if (oldProgress < 60) {
+                } else if (oldProgress < 20) {
                     setStatus('Creating Lists');
-                }
-                else if (oldProgress < 90) {
+                } else if (oldProgress < 80) {
                     setStatus('Creating Tasks');
                 } else {
                     setStatus('Finishing');
@@ -73,6 +85,7 @@ function CompletePage({tasks, assignments, config}) {
 
             }
 
+            // Complete, show finished and create error table
             setProgress(100);
             if (tempErrors.length > 0) {
                 setStatus('Finished with issues. See below...');
@@ -83,7 +96,7 @@ function CompletePage({tasks, assignments, config}) {
         }
     };
 
-    useEffect( () => {
+    useEffect(() => {
         createTasks();
 
     }, []);

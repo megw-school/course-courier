@@ -1,8 +1,18 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {formatReviewTree} from "../utils";
 
-function OrganizePage({config, setConfig, workspaces, assignments, setReviewData}) {
+/**
+ * Organize Page
+ * Handles second step of Course Courier process. Allows user to select workspace to create tasks in as well as how
+ * they want to organize those tasks.
+ *
+ * @param config stores the organization selections made by the user
+ * @param setConfig set the config state
+ * @returns {Element} Organize Page
+ * @constructor
+ */
+function OrganizePage({config, setConfig}) {
+    const [workspaces, setWorkspaces] = useState([])
     const [workspace_name, setWorkspaceName] = useState(config.workspace_name);
     const [space, setSpace] = useState(config.space);
     const [list, setList] = useState(config.list);
@@ -11,6 +21,11 @@ function OrganizePage({config, setConfig, workspaces, assignments, setReviewData
     const [include_start, setIncludeStart] = useState(config.includeStart);
     const [include_url, setIncludeUrl] = useState(config.includeUrl);
 
+    /**
+     * Next Step
+     * Handles logic for navigating to the next page: Review.
+     *
+     */
     const navigate = useNavigate();
     const nextStep = () => {
         if (workspace_name === 'default') {
@@ -18,22 +33,54 @@ function OrganizePage({config, setConfig, workspaces, assignments, setReviewData
             return;
         }
 
-        const newConfig = {workspace_name:workspace_name, space:space, list:list, tag:tag ,week_start: week_start, includeStart:include_start, includeUrl:include_url};
-
-        // Create review tree
-        let workspace, expand_all, tasks;
-        [workspace, expand_all, tasks] = formatReviewTree(assignments, newConfig);
-        setReviewData({workspace: workspace, expanded: expand_all, tasks:tasks});
+        const newConfig = {
+            workspace_name: workspace_name,
+            space: space,
+            list: list,
+            tag: tag,
+            week_start: week_start,
+            includeStart: include_start,
+            includeUrl: include_url
+        };
         setConfig(newConfig);
         navigate('/review');
     };
 
+    /**
+     * Previous Step
+     * Handles logic for navigating to the previous page: Import
+     *
+     */
     const prevStep = () => {
-        let newConfig = {workspace_name:workspace_name, space:space, list:list, tag:tag ,week_start: week_start, includeStart:include_start, includeUrl:include_url};
+        let newConfig = {
+            workspace_name: workspace_name,
+            space: space,
+            list: list,
+            tag: tag,
+            week_start: week_start,
+            includeStart: include_start,
+            includeUrl: include_url
+        };
         setConfig(newConfig);
 
         navigate('/import');
     };
+
+    /**
+     * Load Workspaces
+     * Calls controller endpoint to collect the user's ClickUp workspaces.
+     *
+     * @returns {Promise<void>}
+     */
+    const loadWorkspaces = async () => {
+        const response = await fetch('/clickup-workspaces');
+        const data = await response.json();
+        setWorkspaces(data);
+    };
+
+    useEffect(() => {
+        loadWorkspaces();
+    }, []);
 
     return (
         <div className='app-organize'>
@@ -43,7 +90,8 @@ function OrganizePage({config, setConfig, workspaces, assignments, setReviewData
             <img className="step-display" src="/progress_organize.png" alt="Progress - Organize"/>
             <div className='content'>
                 <h3>Organize Coursework</h3>
-                <p>Choose a workspace and then adjust how coursework tasks will be grouped and labeled in that workspace using the options below.</p>
+                <p>Choose a workspace and then adjust how coursework tasks will be grouped and labeled in that workspace
+                    using the options below.</p>
                 <br/>
                 <form>
                     <div className="split-container">
@@ -137,9 +185,11 @@ function OrganizePage({config, setConfig, workspaces, assignments, setReviewData
                 </form>
                 <br/>
                 <br/>
-                <div className = "button-group">
-                    <button className='default-button' onClick={nextStep} title="Go to Review"><span>Save & Continue</span></button>
-                    <button className='default-button' id="back-button" onClick={prevStep} title="Back to Import"><span>Go Back</span></button>
+                <div className="button-group">
+                    <button className='default-button' onClick={nextStep} title="Go to Review">
+                        <span>Save & Continue</span></button>
+                    <button className='default-button' id="back-button" onClick={prevStep} title="Back to Import"><span>Go Back</span>
+                    </button>
                 </div>
             </div>
         </div>

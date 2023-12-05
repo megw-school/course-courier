@@ -1,5 +1,13 @@
 import React from 'react'
 
+/**
+ * Assignment Row
+ * Used for assignment table in Import page.
+ *
+ * @param assignment assignment object
+ * @returns {Element} assignment row
+ * @constructor
+ */
 function AssignmentRow({assignment}) {
     return (
         <>

@@ -1,5 +1,16 @@
 import React from 'react';
 
+/**
+ * OAuth Credentials Form
+ * Provides the form for providing Oauth Credentials.
+ *
+ * @param client_id
+ * @param client_secret
+ * @param setClientId
+ * @param setClientSecret
+ * @returns {Element}
+ * @constructor
+ */
 function OAuthCredentialsForm({client_id, client_secret, setClientId, setClientSecret}) {
     return (
         <>
@@ -12,7 +23,7 @@ function OAuthCredentialsForm({client_id, client_secret, setClientId, setClientS
             <label className="label-col">Client Secret</label>
             <input
                 className='input-col'
-                type="text"
+                type="password"
                 value={client_secret}
                 onChange={e => setClientSecret(e.target.value)}/>
         </>

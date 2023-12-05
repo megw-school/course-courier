@@ -48,7 +48,7 @@ function formatReviewTree(assignments, config) {
     for (let el of assignments) {
         // Add/Update Space
         // Was a space configuration provided?
-        space_label = (config.space !== 'none') ? 'Space -- '+el[config.space] : "Space -- Canvas (Course Courier)";
+        space_label = (config.space !== 'none') ? 'Space -- '+el[config.space] : "Space -- All Courses";
         space_value = (config.space !== 'none') ? el[config.space+'_id'] : "default";
 
         // check if we need to add this label to the tree
@@ -60,7 +60,7 @@ function formatReviewTree(assignments, config) {
 
         // Add/Update List
         // Was a space configuration provided?
-        list_label = (config.list !== 'none') ? 'List -- '+el[config.list] : "List -- Assignments";
+        list_label = (config.list !== 'none') ? 'List -- '+el[config.list] : "List -- All Coursework";
         list_value = space_value+'//'+((config.list !== 'none') ? el[config.list+'_id'] :  "default");
 
         // check if we need to add this label to the tree
@@ -76,7 +76,7 @@ function formatReviewTree(assignments, config) {
         task_value = list_value+'//'+el['id'];
         tasks.push(el['id']);
 
-        if (config.space === 'none') {
+        if (config.tag === 'none') {
             space_tree[space_ind].children[list_ind].children.push({label: task_label, value: task_value});
             expand_all.push(task_value);
             tasks.push(task_value);

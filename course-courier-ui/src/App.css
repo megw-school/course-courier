@@ -249,16 +249,39 @@ tr:nth-child(even){background-color: #F2F3F5}
   float: right;
 }
 
-/* Help Styling*/
-
-
 /* Import Styling */
+.term-box {
+  display: flex;
+  float: left;
+  flex-direction: row;
+}
+
+.term-box > button {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 5px;
+  height: 3rem;
+}
+.term-box > input, select {
+  padding: 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 5px;
+  height: 3rem;
+}
+
+.term-box input {
+  width: 6rem;
+}
+
 .app-import .row {
   padding: 10px;
   display: flex;
 }
 
-.import-content-left {
+.app-import .import-content-left {
   float: left;
   width: 35%;
 }

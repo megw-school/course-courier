@@ -1,6 +1,13 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
 
+/**
+ * Navigation
+ * Creates the navigation bar.
+ *
+ * @returns {Element}
+ * @constructor
+ */
 function Navigation() {
     return (
         <nav className="app-nav">
@@ -11,7 +18,7 @@ function Navigation() {
             </ul>
         </nav>
     );
-  }
-  
+}
+
 
 export default Navigation;

@@ -1,70 +1,38 @@
-# Getting Started with Create React App
+# Course Courier
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Course Courier is an application designed to streamline the process of managing academic assignments. Canvas is weidely used web-based learning management system where students can find and submit their assigned coursework. While it provides some task management capabilities, task managment is not one size fits all and everyone has their own preferences and preferred softwares for how they manage their tasks. This is where Course Courier comes in. Course Courier enables its users to copy their coursework from Canvas to the task management software of their chocie. Users can filter the assignments they want to copy and tailor how it will be organized in their task management software.
 
-## Available Scripts
+At the moment, Course Courier is optimized for integration with ClickUp. However, I would love to add more task management software integrations down the road. For those using other platforms, you can export Canvas data for easy import elsewhere.
 
-In the project directory, you can run:
+![Course Courier Home](assets/homePage.JPG)
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Project Background
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+I developed this application as part of portfolio assignment for Software Engineering I this past Fall. The idea for this was born out of a personal need to make assignment tracking more efficient. I found the process of migrating school tasks from Canvas to other systems tedious and time consuming and wanted to build a tool that autoamted the process, turning this activity into one that takes hours to one that takes minutes.
 
-### `npm test`
+This project is definietly bigger than what the portfolio assignment called for, but I had a lot of fun building it out. I would love to one day host this publically, but for now it just runs locally as a personal tool. This is in part to comply with Canvas' API Terms and Conditions and also because I am not ready to manage secrets and tokens.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Importing Canvas Assignments](assets/import.JPG)
+![Coursework copying to ClickUp.](assets/completeInProgress.JPG)
+![Courses appearing in ClickUp](assets/clickup.JPG)
 
-### `npm run build`
+## Try It Out
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Fork the Repository**: Start by forking the repo to get your own copy.
+2. **Environment Setup**: Ensure to set up your `.env` files in the `course-courier-rest` folder. Follow the instructions provided in the two template files.
+3. **Running the Application**:
+    - Run the REST controller first.
+    - Following that, run the React application.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Contribution and Feedback
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+There is definitely room for improvement in this project. It would be great to improve the seamlessness of the application as well as support integration of other task managment softwares. If you're interested in contributing or trying out Course Courier, feel free to fork the repository and explore its capabilities. Your feedback and contributions are highly appreciated!
 
-### `npm run eject`
+## Disclaimer
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Please note that this project is intended for personal use. It is essential to comply with Canvas' API Terms and Conditions when using this application. 
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Contact
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+For any queries or suggestions, please feel free to reach out through the project's GitHub repository.

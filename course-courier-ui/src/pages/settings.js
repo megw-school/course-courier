@@ -99,26 +99,31 @@ function SettingsPage({settings, setSettings}) {
         const response_tm = await fetch('/credentials/clickup');
         const tm_auth = await response_tm.json();
 
+        console.log(canvas_auth);
+        console.log(tm_auth);
+
         const data = {
-            canvas_auth: 'oauth',
+            canvas_auth: canvas_auth.auth_type,
             canvas_token: canvas_auth.token,
             canvas_client_id: canvas_auth.client_id,
             canvas_client_secret: canvas_auth.client_secret,
             task_manager: 'ClickUp',
-            tm_auth: 'oauth',
+            tm_auth: tm_auth.auth_type,
             tm_token: tm_auth.token,
             tm_client_id: tm_auth.client_id,
             tm_client_secret: tm_auth.client_secret
         };
 
-        if (data.canvas_token !== '' && data.canvas_client_id === '') {
-            data.canvas_auth = 'token'
-        }
-
-        if (data.tm_token !== '' && data.tm_client_id === '') {
-            data.tm_auth = 'token'
-        }
         setSettings(data);
+        setCanvasAuth(data['canvas_auth']);
+        setCanvasToken(data['canvas_token']);
+        setCanvasClientID(data['canvas_client_id']);
+        setCanvasClientSecret(data['canvas_client_secret']);
+        setTaskManager(data['task_manager']);
+        setTmAuth(data['tm_auth']);
+        setTmToken(data['tm_token']);
+        setTmClientID(data['tm_client_id']);
+        setTmClientSecret(data['tm_client_secret']);
     };
 
     useEffect(() => {

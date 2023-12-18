@@ -125,6 +125,11 @@ table {
 }
 
 tr th {
+  position: sticky;
+  top: 0;
+}
+
+tr th {
   background-color: #1E3D58;
   border-bottom: 3px solid white;
   color: white;
@@ -238,6 +243,7 @@ tr:nth-child(even){background-color: #F2F3F5}
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  height: auto;
   margin: 5px;
 }
 
@@ -284,6 +290,8 @@ tr:nth-child(even){background-color: #F2F3F5}
 .app-import .import-content-left {
   float: left;
   width: 35%;
+  max-height: 1000px;
+  overflow: auto;
 }
 
 .app-import  .react-checkbox-tree {
@@ -293,7 +301,8 @@ tr:nth-child(even){background-color: #F2F3F5}
 .import-content-right {
   float: left;
   width: 65%;
-  overflow-x: auto;
+  max-height: 1000px;
+  overflow: auto;
 }
 
 .app-import .default-button {
@@ -328,6 +337,7 @@ tr:nth-child(even){background-color: #F2F3F5}
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  height: auto;
   margin: 5px;
 }
 
@@ -348,6 +358,8 @@ tr:nth-child(even){background-color: #F2F3F5}
 .review-content-left {
   float: left;
   width: 70%;
+  max-height: 1000px;
+  overflow: auto;
 }
 
 .app-review .react-checkbox-tree {
@@ -383,5 +395,6 @@ tr:nth-child(even){background-color: #F2F3F5}
 }
 
 .app-complete .complete-error-table {
-   overflow-x: auto;
+  max-height: 1000px;
+  overflow: auto;
  }

@@ -180,7 +180,9 @@ def get_credentials(service):
         return "Invalid parameter. Service not supported.", 400
 
     if request.method == 'GET':
+
         data = {
+            'auth_type': memo[service]['auth_type'],
             'token': dotenv.get_key(ENV_SECRET, f'{service}_TOKEN'),
             'client_id': dotenv.get_key(ENV_SECRET, f'{service}_CLIENT_ID'),
             'client_secret': dotenv.get_key(ENV_SECRET, f'{service}_CLIENT_SECRET')
@@ -272,6 +274,7 @@ def create_clickup_task():
     task_id, success = build_clickup_task(data.get('workspace', None), data.get('space', None), data.get('list', None),
                                           data.get('task', None))
 
+    print(task_id)
     if not success:
         return task_id, 400
 
